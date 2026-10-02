@@ -1,0 +1,9 @@
+.root { position:relative; isolation:isolate; overflow:hidden; }
+.details { position:relative; z-index:2; }
+.playground { min-height:210px; display:grid; place-items:center; padding:32px 24px; text-align:center; }
+.prompt,.staticPrompt { font-family:var(--font-bolton),var(--font-khteka),sans-serif; font-size:64px; font-weight:400; line-height:1; letter-spacing:0; text-transform:uppercase; margin:0; }
+.staticPrompt { display:none; }
+.trail { position:absolute; inset:0; pointer-events:none; z-index:1; }
+.image { position:absolute; top:0; left:0; width:90px; height:105px; object-fit:contain; opacity:0; will-change:transform,opacity; }
+@media(max-width:700px) { .playground { min-height:160px; padding:24px 16px; } .prompt,.staticPrompt { font-size:36px; } }
+@media(hover:none),(pointer:coarse),(prefers-reduced-motion:reduce) { .prompt,.trail { display:none; } .staticPrompt { display:block; } }

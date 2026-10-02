@@ -1,0 +1,11 @@
+.surface { position:relative; min-height:540px; padding:24px 0; display:flex; flex-direction:column; justify-content:center; gap:24px; color:#e8e8e3; }
+.header,.footer { padding-inline:24px; display:flex; justify-content:space-between; align-items:center; font:10px/1.5 var(--font-suisse-mono),monospace; color:#aaa; }
+.carousel { width:100%; padding:12px 0 36px; --swiper-pagination-color:#e8e8e3; --swiper-pagination-bullet-inactive-color:#777; --swiper-pagination-bullet-inactive-opacity:.5; }
+.slide { width:min(68%,312px); height:auto; aspect-ratio:4 / 5; overflow:hidden; border-radius:6px; background:#090909; border:1px solid #ffffff20; }
+.image { object-fit:cover; }
+.footer>div { display:flex; gap:8px; margin-left:auto; }
+.footer button { width:36px; height:36px; display:grid; place-items:center; border:1px solid #ffffff30; border-radius:4px; color:#e8e8e3; }
+.footer button:hover { background:#ffffff12; }
+.footer button:focus-visible,.footer a:focus-visible { outline:2px solid white; outline-offset:3px; }
+@media(max-width:700px) { .surface { min-height:480px; } }
+@media(prefers-reduced-motion:reduce) { .carousel :global(.swiper-wrapper) { transition-duration:0ms!important; } }

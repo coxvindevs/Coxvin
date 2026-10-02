@@ -1,5 +1,13 @@
 import localFont from 'next/font/local';
 
+export const bolton = localFont({
+  src: '../../public/fonts/BOLTON.ttf',
+  weight: '400',
+  style: 'normal',
+  variable: '--font-bolton',
+  display: 'swap',
+});
+
 export const khteka = localFont({
   src: [
     {

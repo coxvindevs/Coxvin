@@ -1,4 +1,5 @@
 'use client';
+import { BOOKING_URL } from '@/lib/contact';
 
 import React, { useRef, useEffect } from 'react';
 import Link from 'next/link';
@@ -6,6 +7,7 @@ import Image from 'next/image';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
+import styles from './CtaSection.module.css';
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -13,11 +15,26 @@ export default function CtaSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const bgImageRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLAnchorElement>(null);
+  const needsRef = useRef<HTMLDivElement>(null);
 
   // Background Image Parallax: 0 -> -150px
   useGSAP(
     () => {
       if (!sectionRef.current || !bgImageRef.current) return;
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && needsRef.current) {
+        const line = needsRef.current;
+        gsap.to(line, {
+          x: () => Math.max(0, (line.parentElement!.clientWidth - line.clientWidth) / 2),
+          ease: 'none',
+          scrollTrigger: {
+            trigger: line.parentElement,
+            start: 'top 75%',
+            end: 'bottom 15%',
+            scrub: true,
+            invalidateOnRefresh: true,
+          },
+        });
+      }
 
       gsap.fromTo(
         bgImageRef.current,
@@ -43,7 +60,7 @@ export default function CtaSection() {
     const btn = buttonRef.current;
     if (!btn) return;
 
-    const isFinePointer = window.matchMedia('(pointer: fine)').matches;
+    const isFinePointer = window.matchMedia('(pointer: fine) and (prefers-reduced-motion: no-preference)').matches;
     if (!isFinePointer) return;
 
     const xTo = gsap.quickTo(btn, 'x', { duration: 0.4, ease: 'power3.out' });
@@ -87,7 +104,7 @@ export default function CtaSection() {
     <section
       id="closing-cta"
       ref={sectionRef}
-      className="relative w-full min-h-[1630.53px] lg:h-[1630.53px] bg-[#080807] text-[#E8E8E3] overflow-hidden z-[2] select-none flex flex-col justify-between"
+      className="relative w-full min-h-screen pb-[195px] md:pb-[230px] lg:pb-[255px] bg-[#080807] text-[#E8E8E3] overflow-hidden z-[2] select-none flex flex-col"
     >
       {/* Background Media Layer (.cta-cover) */}
       <div className="absolute inset-0 overflow-hidden z-0 pointer-events-none">
@@ -124,22 +141,23 @@ export default function CtaSection() {
 
       {/* Accessible Screen-Reader Heading */}
       <h2 className="sr-only">
-        Ready to build the system your business needs next?
+        Let&apos;s build the system your business needs.
       </h2>
 
       {/* Content Layer (Top / Main Editorial crescendo) */}
-      <div className="relative z-[2] w-full max-w-[1280px] mx-auto px-6 pt-[155px] md:pt-[180px] lg:pt-[195px] flex flex-col items-start">
+      <div className="relative z-[2] w-full max-w-[1280px] mx-auto px-6 pt-[195px] md:pt-[230px] lg:pt-[255px] flex flex-col items-center text-center">
         {/* 4-Line Display Stack */}
         <div
-          className="flex flex-col uppercase tracking-[-0.03em] leading-[0.9] text-[clamp(3.5rem,10.23vw,131px)] font-medium font-sans text-[#E8E8E3]"
+          className="flex flex-col uppercase tracking-normal leading-[0.95] text-[38px] sm:text-[64px] md:text-[80px] lg:text-[104px] xl:text-[131px] font-normal text-[#E8E8E3]"
+          style={{ fontFamily: 'var(--font-bolton), var(--font-khteka), sans-serif' }}
           aria-hidden="true"
         >
           <div>Let&apos;s build</div>
           <div>the system</div>
           <div>your business</div>
-          <div className="flex items-center gap-[0.2em]">
-            <span className="inline-block text-[0.88em] leading-none">→</span>
-            <span>needs next</span>
+          <div ref={needsRef} className="flex self-center items-center justify-center gap-[0.2em]">
+            <span className={styles.needsArrow}>→</span>
+            <span>needs</span>
           </div>
         </div>
 
@@ -147,11 +165,14 @@ export default function CtaSection() {
         <div className="mt-10 md:mt-12">
           <Link
             ref={buttonRef}
-            href="#contact"
-            className="group relative inline-flex items-center gap-4 px-7 py-3.5 rounded-full bg-[#E8E8E3] text-[#080807] transition-all duration-300 hover:bg-white focus:outline-none focus:ring-2 focus:ring-[#E8E8E3]/50 text-[13px] font-sans font-medium uppercase tracking-[0.02em]"
+            href={BOOKING_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`group ${styles.button}`}
+            aria-label="Tell us what you're building"
           >
-            <span>Tell us what you&apos;re building</span>
-            <span className="relative w-7 h-7 rounded-full bg-[#080807] text-[#E8E8E3] flex items-center justify-center overflow-hidden flex-shrink-0">
+            <span className={styles.label} aria-hidden="true"><span>Tell us what you&apos;re building</span><span>Tell us what you&apos;re building</span></span>
+            <span aria-hidden="true" className={styles.buttonArrow}>
               {/* Default Arrow */}
               <svg
                 className="w-3.5 h-3.5 absolute transition-transform duration-[650ms] ease-[cubic-bezier(0.16,1,0.35,1)] group-hover:translate-x-[140%] group-hover:-translate-y-[140%]"
@@ -185,109 +206,6 @@ export default function CtaSection() {
         </div>
       </div>
 
-      {/* Bottom Proof / Credential Area */}
-      <div className="relative z-[2] w-full max-w-[1280px] mx-auto px-6 pb-28 md:pb-36 mt-auto flex flex-col items-center">
-        {/* Title */}
-        <div className="text-[11px] font-mono tracking-[0.25em] text-[#E8E8E3]/60 uppercase mb-8 text-center">
-          SELECTED CAPABILITIES
-        </div>
-
-        {/* 3 Truthful Capability Proof Markers */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-14 w-full max-w-[960px] mb-10">
-          {/* Capability 01: DIGITAL EXPERIENCES */}
-          <div className="flex flex-col items-center text-center group">
-            <div className="w-16 h-16 rounded-full border border-[#E8E8E3]/25 flex items-center justify-center mb-4 transition-colors duration-500 group-hover:border-[#E8E8E3]/50 bg-[#080807]/50 backdrop-blur-sm shadow-sm">
-              <svg
-                width="28"
-                height="28"
-                viewBox="0 0 28 28"
-                fill="none"
-                stroke="currentColor"
-                className="text-[#E8E8E3]/90 transition-transform duration-500 group-hover:scale-105"
-              >
-                <circle cx="14" cy="14" r="11" strokeWidth="1" strokeDasharray="2 2" />
-                <circle cx="14" cy="14" r="6" strokeWidth="1.2" />
-                <line x1="14" y1="2" x2="14" y2="26" strokeWidth="0.8" strokeOpacity="0.4" />
-                <line x1="2" y1="14" x2="26" y2="14" strokeWidth="0.8" strokeOpacity="0.4" />
-              </svg>
-            </div>
-            <div className="text-[11px] font-mono text-[#E8E8E3]/40 tracking-wider mb-1">
-              [ DOMAIN — 01 ]
-            </div>
-            <div className="text-[13px] font-mono font-medium tracking-[0.14em] text-[#E8E8E3] uppercase">
-              DIGITAL EXPERIENCES
-            </div>
-          </div>
-
-          {/* Capability 02: PRODUCT ENGINEERING */}
-          <div className="flex flex-col items-center text-center group">
-            <div className="w-16 h-16 rounded-full border border-[#E8E8E3]/25 flex items-center justify-center mb-4 transition-colors duration-500 group-hover:border-[#E8E8E3]/50 bg-[#080807]/50 backdrop-blur-sm shadow-sm">
-              <svg
-                width="28"
-                height="28"
-                viewBox="0 0 28 28"
-                fill="none"
-                stroke="currentColor"
-                className="text-[#E8E8E3]/90 transition-transform duration-500 group-hover:scale-105"
-              >
-                <polygon
-                  points="14 3, 24 8.7, 24 20, 14 25.7, 4 20, 4 8.7"
-                  strokeWidth="1.2"
-                />
-                <line x1="14" y1="3" x2="14" y2="25.7" strokeWidth="0.8" strokeOpacity="0.4" />
-                <line x1="4" y1="8.7" x2="24" y2="20" strokeWidth="0.8" strokeOpacity="0.4" />
-                <line x1="24" y1="8.7" x2="4" y2="20" strokeWidth="0.8" strokeOpacity="0.4" />
-              </svg>
-            </div>
-            <div className="text-[11px] font-mono text-[#E8E8E3]/40 tracking-wider mb-1">
-              [ DOMAIN — 02 ]
-            </div>
-            <div className="text-[13px] font-mono font-medium tracking-[0.14em] text-[#E8E8E3] uppercase">
-              PRODUCT ENGINEERING
-            </div>
-          </div>
-
-          {/* Capability 03: AI & AUTOMATION */}
-          <div className="flex flex-col items-center text-center group">
-            <div className="w-16 h-16 rounded-full border border-[#E8E8E3]/25 flex items-center justify-center mb-4 transition-colors duration-500 group-hover:border-[#E8E8E3]/50 bg-[#080807]/50 backdrop-blur-sm shadow-sm">
-              <svg
-                width="28"
-                height="28"
-                viewBox="0 0 28 28"
-                fill="none"
-                stroke="currentColor"
-                className="text-[#E8E8E3]/90 transition-transform duration-500 group-hover:scale-105"
-              >
-                <circle cx="14" cy="14" r="3" strokeWidth="1.2" />
-                <circle cx="6" cy="10" r="2" strokeWidth="1" />
-                <circle cx="22" cy="10" r="2" strokeWidth="1" />
-                <circle cx="9" cy="21" r="2" strokeWidth="1" />
-                <circle cx="19" cy="21" r="2" strokeWidth="1" />
-                <line x1="6" y1="10" x2="14" y2="14" strokeWidth="0.8" strokeOpacity="0.5" />
-                <line x1="22" y1="10" x2="14" y2="14" strokeWidth="0.8" strokeOpacity="0.5" />
-                <line x1="9" y1="21" x2="14" y2="14" strokeWidth="0.8" strokeOpacity="0.5" />
-                <line x1="19" y1="21" x2="14" y2="14" strokeWidth="0.8" strokeOpacity="0.5" />
-              </svg>
-            </div>
-            <div className="text-[11px] font-mono text-[#E8E8E3]/40 tracking-wider mb-1">
-              [ DOMAIN — 03 ]
-            </div>
-            <div className="text-[13px] font-mono font-medium tracking-[0.14em] text-[#E8E8E3] uppercase">
-              AI & AUTOMATION
-            </div>
-          </div>
-        </div>
-
-        {/* Restrained Architectural Endorsement Statement */}
-        <div className="text-center max-w-[620px] pt-4">
-          <p className="text-[14px] md:text-[15px] font-sans text-[#E8E8E3]/85 tracking-wide leading-relaxed">
-            &ldquo;Engineered systems designed for brand authority, transactional resilience, and conversion velocity.&rdquo;
-          </p>
-          <div className="text-[10px] font-mono tracking-[0.2em] text-[#E8E8E3]/45 uppercase mt-3">
-            — CORE SYSTEM SPECIFICATIONS &amp; PRODUCTION CAPABILITIES
-          </div>
-        </div>
-      </div>
     </section>
   );
 }

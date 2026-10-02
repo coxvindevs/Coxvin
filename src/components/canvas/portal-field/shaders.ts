@@ -1,0 +1,78 @@
+// Adapted from ThreeUI Community Portal Field (MIT). See LICENSE and SOURCE.md.
+// Noise, arcs, illumination, and compositing retain the authored implementation.
+export const portalVertexShader = `
+            varying vec2 vUv;
+            void main() {
+                vUv = uv;
+                gl_Position = vec4(position, 1.0);
+            }
+        `;
+
+export const portalFragmentShader = `
+            uniform float u_time;
+            uniform vec2 u_resolution;
+            uniform vec2 u_mouse;
+            uniform vec2 u_portalCenter;
+            uniform vec3 u_colorCore;
+            uniform vec3 u_colorFringe;
+            uniform float u_isLightMode;
+            varying vec2 vUv;
+
+            vec2 hash( vec2 p ) {
+                p = vec2( dot(p,vec2(127.1,311.7)), dot(p,vec2(269.5,183.3)) );
+                return -1.0 + 2.0*fract(sin(p)*43758.5453123);
+            }
+            float noise( in vec2 p ) {
+                const float K1 = 0.366025404;
+                const float K2 = 0.211324865;
+                vec2 i = floor( p + (p.x+p.y)*K1 );
+                vec2 a = p - i + (i.x+i.y)*K2;
+                vec2 o = (a.x>a.y) ? vec2(1.0,0.0) : vec2(0.0,1.0);
+                vec2 b = a - o + K2;
+                vec2 c = a - 1.0 + 2.0*K2;
+                vec3 h = max( 0.5-vec3(dot(a,a), dot(b,b), dot(c,c) ), 0.0 );
+                vec3 n = h*h*h*h*vec3( dot(a,hash(i+0.0)), dot(b,hash(i+o)), dot(c,hash(i+1.0)));
+                return dot( n, vec3(70.0) );
+            }
+
+            float sdArc(vec2 p, vec2 center, float radius, float width, float warp) {
+                p.y += sin(p.x * 2.0 + u_time * 0.3) * warp;
+                p.x += noise(p * 1.5 + u_time * 0.1) * (warp * 0.8);
+                float d = length(p - center) - radius;
+                return abs(d) - width;
+            }
+
+            void main() {
+                vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+                vec2 st = uv;
+                st.x *= u_resolution.x / u_resolution.y;
+                
+                vec2 mouseOffset = (u_mouse - 0.5) * 0.05;
+                st += mouseOffset;
+
+                // Center organic form behind the content area
+                vec2 center = vec2(u_portalCenter.x * u_resolution.x / u_resolution.y, u_portalCenter.y);
+                
+                float d1 = sdArc(st, center, 0.6, 0.02, 0.15);
+                float d2 = sdArc(st, center, 0.65, 0.06, 0.2);
+                
+                float coreGlow = exp(-d1 * 30.0);
+                float fringeGlow = exp(-d2 * 10.0);
+                float wash = smoothstep(1.5, -0.5, length(st - center)) * 0.15;
+
+                vec3 finalColor = vec3(0.0);
+                finalColor += u_colorCore * coreGlow;
+                finalColor += u_colorFringe * fringeGlow;
+                finalColor += u_colorFringe * wash * (sin(u_time * 0.5) * 0.2 + 0.8);
+
+                float alpha = clamp(coreGlow + fringeGlow + wash, 0.0, 1.0);
+                finalColor = vec3(1.0) - exp(-finalColor * 1.5);
+                
+                if(u_isLightMode > 0.5) {
+                    alpha = clamp((coreGlow * 1.2 + fringeGlow + wash * 0.4), 0.0, 0.4);
+                }
+
+                gl_FragColor = vec4(finalColor, alpha * 0.6);
+            }
+        `;
+

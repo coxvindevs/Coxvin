@@ -58,18 +58,29 @@ export default function ProcessSection() {
 
   // GSAP quickTo for smooth pointer following
   useEffect(() => {
-    if (!cursorWrapRef.current) return;
+    const cursor = cursorWrapRef.current;
+    if (!cursor) return;
 
-    const xTo = gsap.quickTo(cursorWrapRef.current, 'x', { duration: 0.4, ease: 'power3.out' });
-    const yTo = gsap.quickTo(cursorWrapRef.current, 'y', { duration: 0.4, ease: 'power3.out' });
+    const xTo = gsap.quickTo(cursor, 'x', { duration: 0.4, ease: 'power3.out' });
+    const yTo = gsap.quickTo(cursor, 'y', { duration: 0.4, ease: 'power3.out' });
+    const hideCursor = () => {
+      cursor.style.visibility = 'hidden';
+      setCursorState('');
+      setIsPressed(false);
+    };
 
     const handleMouseMove = (e: MouseEvent) => {
+      const link = e.target instanceof Element ? e.target.closest<HTMLElement>('.process-media-link') : null;
+      if (!link || !sectionRef.current?.contains(link)) {
+        hideCursor();
+        return;
+      }
       const threshold = 340; // width allowance for flip
       const isNearRightEdge = e.clientX + threshold > window.innerWidth;
 
-      if (cursorState !== '') {
-        setCursorState(isNearRightEdge ? 'active-edge' : 'active');
-      }
+      cursor.style.visibility = 'visible';
+      setCtaText(link.dataset.cta ?? '');
+      setCursorState(isNearRightEdge ? 'active-edge' : 'active');
 
       const targetX = isNearRightEdge ? e.clientX - 16 : e.clientX + 16;
       const targetY = e.clientY - 17.5;
@@ -84,13 +95,26 @@ export default function ProcessSection() {
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
     window.addEventListener('mousedown', handleMouseDown);
     window.addEventListener('mouseup', handleMouseUp);
+    // Scrolling can move the hovered media away without firing mouseleave.
+    window.addEventListener('scroll', hideCursor, { passive: true, capture: true });
+    window.addEventListener('blur', hideCursor);
+    window.addEventListener('resize', hideCursor);
+    document.addEventListener('visibilitychange', hideCursor);
+    document.documentElement.addEventListener('mouseleave', hideCursor);
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mousedown', handleMouseDown);
       window.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener('scroll', hideCursor, true);
+      window.removeEventListener('blur', hideCursor);
+      window.removeEventListener('resize', hideCursor);
+      document.removeEventListener('visibilitychange', hideCursor);
+      document.documentElement.removeEventListener('mouseleave', hideCursor);
+      xTo.tween.kill();
+      yTo.tween.kill();
     };
-  }, [cursorState]);
+  }, []);
 
   // Visibility-based video playback
   useGSAP(
@@ -239,6 +263,7 @@ export default function ProcessSection() {
                     setCursorState(e.clientX + threshold > window.innerWidth ? 'active-edge' : 'active');
                   }}
                   onMouseLeave={() => {
+                    if (cursorWrapRef.current) cursorWrapRef.current.style.visibility = 'hidden';
                     setCursorState('');
                   }}
                   className="process-media-link block w-full h-full relative group cursor-none"

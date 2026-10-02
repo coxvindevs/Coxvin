@@ -1,0 +1,6 @@
+.hero { height:100svh; min-height:0; }
+.wordmark { left:1.7%; right:1.7%; bottom:-4%; height:38%; }
+.wordmark img { object-fit:fill; filter:brightness(0.85); }
+@media(max-width:600px) { .wordmark { left:16px; right:16px; bottom:0; height:20%; } .wordmark img { object-fit:contain; } }
+@media(max-height:600px) { .copy { font-size:15px; line-height:17px; } }
+@media(max-height:450px) { .copy { font-size:12px; line-height:13px; } }

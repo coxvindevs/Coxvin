@@ -1,0 +1,34 @@
+.surface { position:relative; isolation:isolate; width:100%; min-height:600px; height:100%; color:#e8e8e3; background:#111; font-family:var(--font-khteka),Arial,sans-serif; overflow:hidden; }
+.surface::before { content:''; position:absolute; z-index:-1; inset:-30px; background:url('/images/services/service-04-ai.jpg') center/cover; filter:grayscale(1) blur(28px); opacity:.35; }
+.header { position:relative; display:flex; align-items:center; justify-content:space-between; padding:18px 22px; font:9px/1.5 var(--font-suisse-mono),monospace; color:#aaa; }
+.header button { display:grid; place-items:center; width:32px; height:32px; border:1px solid #ffffff30; border-radius:4px; }
+.diagram { position:relative; width:100%; max-width:780px; aspect-ratio:1.25; margin:0 auto; }
+.paths { position:absolute; width:100%; height:100%; overflow:visible; }
+.track,.signal { fill:none; stroke-width:.3; }
+.track { stroke:#ffffff26; }
+.signal { stroke:#fff; stroke-dasharray:2 3; opacity:0; }
+.signal[data-active='true'] { opacity:1; animation:transfer 2.8s linear infinite; }
+.signal[data-reverse='true'] { animation-direction:reverse; }
+.node { position:absolute; transform:translate(-50%,-50%); width:52px; height:52px; display:grid; place-items:center; border:1px solid #ffffff40; border-radius:8px; background:#000; color:#ddd; transition:background .25s,color .25s; }
+.node[data-active='true'] { background:#0b0b0b; color:#fff; border-color:#fff; box-shadow:0 0 0 1px #ffffff55,0 0 20px #ffffff30; }
+.node span { position:absolute; top:calc(100% + 5px); color:#ddd; white-space:nowrap; font-size:11px; line-height:1.2; }
+.node:hover,.node:focus-visible { z-index:3; }
+.node .tooltip { top:auto; bottom:calc(100% + 12px); left:50%; transform:translateX(-50%) translateY(4px); width:190px; padding:12px; border:1px solid #ffffff30; border-radius:6px; background:#161616f5; box-shadow:0 8px 24px #0006; color:#eee; white-space:normal; text-align:left; font-size:12px; line-height:1.45; font-weight:500; opacity:0; visibility:hidden; pointer-events:none; transition:opacity .15s,transform .15s; }
+.node .tooltip[data-side='right'] { left:auto; right:-8px; transform:translateY(4px); }
+.node .tooltip[data-side='left'] { left:-8px; transform:translateY(4px); }
+.node:hover .tooltip,.node:focus-visible .tooltip { visibility:visible; opacity:1; transform:translateX(-50%) translateY(0); }
+.node:hover .tooltip[data-side='right'],.node:focus-visible .tooltip[data-side='right'],.node:hover .tooltip[data-side='left'],.node:focus-visible .tooltip[data-side='left'] { transform:translateY(0); }
+.node:focus-visible,.header button:focus-visible { outline:2px solid white; outline-offset:4px; }
+.detail { position:relative; padding:18px 24px 24px; border-top:1px solid #ffffff18; }
+.detail>span { font:9px/1.4 var(--font-suisse-mono),monospace; color:#999; }
+.detail h3 { font-size:19px; font-weight:700; margin:6px 0; }
+.detail p { font-size:13px; line-height:1.4; color:#aaa; margin:0; }
+.toastSlot { position:relative; z-index:2; height:74px; margin:0 22px; display:flex; justify-content:flex-end; align-items:flex-start; }
+.toast { width:min(100%,384px); display:flex; align-items:center; gap:12px; padding:16px; border:1px solid #ffffff1a; background:linear-gradient(135deg,#ffffff12,transparent 55%),#141414e6; color:#e8e8e3; border-radius:20px; backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); box-shadow:inset 0 1px 0 #ffffff18,0 12px 28px #0004; }
+.toast>svg { flex:none; }
+.toast p { font-size:14px; line-height:20px; font-weight:500; margin:0; }
+@media(max-width:640px) { .toastSlot { margin-inline:16px; justify-content:center; } }
+@media(max-width:700px) { .diagram { aspect-ratio:1; } .node .tooltip { width:160px; font-size:11px; } }
+@keyframes transfer { to { stroke-dashoffset:-15; } }
+@media(max-width:700px) { .surface { min-height:0; } .node { width:40px; height:40px; } .node svg { width:19px; height:19px; } .node span { font-size:9px; } .header { padding:14px; font-size:8px; } .detail { padding:16px; } }
+@media(prefers-reduced-motion:reduce) { .signal[data-active='true'] { animation:none; } .node { transition:none; } }

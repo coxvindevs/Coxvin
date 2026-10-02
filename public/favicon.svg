@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="196 196 854 854">
+  <style>
+    .mark { fill: #101010; }
+    @media (prefers-color-scheme: dark) { .mark { fill: #f5f5f5; } }
+  </style>
+  <g class="mark">
+    <path d="M421 424H544L607 511H422C285 511 285 740 422 740H602L529 827H421C148 827 148 424 421 424Z"/>
+    <path d="M574 424H694L1007 827H878L786 705L681 827H558L723 626Z"/>
+    <path d="M803 523L879 424H1030L872 615Z"/>
+  </g>
+</svg>

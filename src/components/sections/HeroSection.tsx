@@ -7,6 +7,9 @@ import { CustomEase } from 'gsap/CustomEase';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import HalftoneCanvas from '@/components/canvas/HalftoneCanvas';
+import { PortalFieldCollection } from '@/components/canvas/portal-field/PortalFieldCollection';
+import styles from './HeroSection.module.css';
+import { useSiteRevealed } from '@/components/layout/SiteLoader';
 
 gsap.registerPlugin(CustomEase, useGSAP, ScrollTrigger);
 
@@ -18,9 +21,11 @@ try {
 
 export default function HeroSection() {
   const containerRef = useRef<HTMLElement>(null);
+  const revealed = useSiteRevealed();
 
   useGSAP(
     () => {
+      if (!revealed) return;
       const tl = gsap.timeline({ delay: 0.1 });
 
       // 1. Small hero CX mark entrance
@@ -59,23 +64,6 @@ export default function HeroSection() {
           0.25
         );
 
-      // Hero exit scroll animations
-      // 1. hero atmospheric/image layer: translateY from -100px to +100px across hero scroll
-      gsap.fromTo(
-        '.hero-bg-img',
-        { y: -100 },
-        {
-          y: 100,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: 'top top',
-            end: 'bottom top',
-            scrub: true,
-          },
-        }
-      );
-
       // 2. hero dark overlay: opacity 0 -> 0.6 across the same hero scroll range
       gsap.fromTo(
         '.hero-dark-overlay',
@@ -92,26 +80,20 @@ export default function HeroSection() {
         }
       );
     },
-    { scope: containerRef }
+    { scope: containerRef, dependencies: [revealed], revertOnUpdate: true }
   );
 
   return (
     <section
       ref={containerRef}
-      className="relative w-full h-[720px] max-h-[100svh] min-h-[720px] overflow-hidden bg-background select-none"
+      className={`relative w-full overflow-hidden bg-background select-none ${styles.hero}`}
     >
-      {/* 1. Background Image / Light Field at ~0.6 opacity */}
-      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-        <img
-          src="/images/hero-light-field.avif"
-          alt=""
-          className="hero-bg-img w-full h-[130%] -top-[15%] relative object-cover opacity-60"
-        />
-      </div>
+      {/* Authored Portal Field replaces the former atmospheric image. */}
+      <PortalFieldCollection className="absolute inset-0 z-0 overflow-hidden pointer-events-none" />
 
       {/* 2. WebGL Halftone Canvas (existing shaders unchanged) */}
       <HalftoneCanvas
-        className="absolute inset-0 z-[1] opacity-100 pointer-events-none"
+        className="absolute inset-0 z-[1] opacity-[0.35] mix-blend-soft-light pointer-events-none"
         amplitude={1.53}
         timeSpeed={0.0065}
         pixelSize={3.0}
@@ -140,12 +122,12 @@ export default function HeroSection() {
       />
 
       {/* 4. Content: Container x24, y24, w1217, h672 */}
-      <div className="relative z-10 w-full h-full max-w-[1217px] mx-auto px-0">
+      <div className="relative z-10 w-full h-full mx-auto px-0">
         {/* Small Hero CX Mark: x≈600.13, y≈171.19, w≈64.75, h≈28.39 */}
         <div
           className="absolute left-1/2 -translate-x-1/2 overflow-hidden flex items-center justify-center"
           style={{
-            top: '171.19px',
+            top: '22%',
             width: '64.75px',
             height: '28.39px',
           }}
@@ -164,11 +146,11 @@ export default function HeroSection() {
         <div
           className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center justify-center"
           style={{
-            top: '230.58px',
+            top: '32%',
             width: '248.06px',
           }}
         >
-          <h1 className="font-sans font-medium text-[17.5px] leading-[19.25px] text-center text-foreground w-full tracking-normal">
+          <h1 className={`font-sans font-medium text-[17.5px] leading-[19.25px] text-center text-foreground w-full tracking-normal ${styles.copy}`}>
             <span className="block overflow-hidden">
               <span className="hero-editorial-line block">We design and engineer</span>
             </span>
@@ -195,11 +177,7 @@ export default function HeroSection() {
 
         {/* Giant Brand Artwork: x≈24, y≈406.58, w≈1217, h≈289.42, bottom sitting 24px above viewport bottom */}
         <div
-          className="absolute left-0 right-0 overflow-hidden flex items-end justify-center"
-          style={{
-            top: '406.58px',
-            height: '289.42px',
-          }}
+          className={`absolute overflow-hidden flex items-end justify-center ${styles.wordmark}`}
         >
           <div className="overflow-hidden w-full h-full flex items-end justify-center">
             <Image

@@ -32,8 +32,12 @@ if (!fs.existsSync(targetDir)) {
 
 async function downloadFont(item) {
   const destination = path.join(targetDir, item.name);
+  if (fs.existsSync(destination) && fs.statSync(destination).size > 0) {
+    console.log(`[download-assets] Using local ${item.name}`);
+    return;
+  }
   console.log(`[download-assets] Fetching ${item.name}...`);
-  const res = await fetch(item.url);
+  const res = await fetch(item.url, { signal: AbortSignal.timeout(30000) });
   if (!res.ok) {
     throw new Error(`Failed to download ${item.name}: ${res.status} ${res.statusText}`);
   }

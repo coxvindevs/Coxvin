@@ -1,0 +1,15 @@
+.loader { position:fixed; inset:0; z-index:9999; display:flex; flex-direction:column; justify-content:space-between; padding:32px; background:#101010; color:#e8e8e3; clip-path:inset(0); transition:clip-path .85s cubic-bezier(.76,0,.24,1); }
+.loader[data-phase='leaving'] { clip-path:inset(0 0 100% 0); pointer-events:none; }
+.top,.bottom { display:flex; justify-content:space-between; align-items:center; gap:24px; font-family:var(--font-suisse-mono),monospace; font-size:11px; line-height:1.5; letter-spacing:0; }
+.center { width:min(900px,90%); align-self:center; }
+.logo { position:relative; width:100%; aspect-ratio:1142 / 211; background:#292929; mask:url('/images/coxvin-wordmark-white.png') center/contain no-repeat; }
+.fill { position:absolute; inset:0; background:#e8e8e3; transition:clip-path .55s cubic-bezier(.22,1,.36,1); }
+.caption { margin-top:28px; text-align:center; font-family:var(--font-khteka),sans-serif; font-size:18px; }
+.count { font-family:var(--font-bolton),sans-serif; font-size:72px; line-height:1; font-variant-numeric:tabular-nums; min-width:145px; text-align:right; }
+.count small { font-family:var(--font-suisse-mono),monospace; font-size:14px; margin-left:8px; }
+.bottom button { padding:10px 0; border-bottom:1px solid currentColor; }
+.bottom button:focus-visible { outline:2px solid currentColor; outline-offset:6px; }
+.track { position:absolute; bottom:0; left:0; right:0; height:2px; background:#242424; }
+.track div { height:100%; background:#e8e8e3; transform-origin:left; transition:transform .4s; }
+@media(max-width:600px) { .loader { padding:24px 20px; } .top,.bottom { font-size:9px; gap:12px; } .count { font-size:48px; min-width:100px; } .caption { font-size:16px; } }
+@media(prefers-reduced-motion:reduce) { .loader,.fill,.track div { transition:none; } }

@@ -1,0 +1,12 @@
+.button { display:inline-flex; align-items:center; gap:16px; padding:8px 8px 8px 16px; border-radius:2px; background:#e8e8e3; color:#080807; font-family:var(--font-khteka),Arial,sans-serif; font-size:28px; font-weight:700; line-height:1.25; letter-spacing:0; max-width:100%; }
+.buttonArrow { position:relative; display:flex; align-items:center; justify-content:center; flex-shrink:0; width:1.5em; height:1.5em; overflow:hidden; border-radius:2px; background:#080807; color:#e8e8e3; }
+.buttonArrow svg { width:.85em; height:.85em; }
+.button:focus-visible { outline:2px solid #e8e8e3; outline-offset:6px; }
+.label { display:block; position:relative; height:1.25em; overflow:hidden; white-space:nowrap; }
+.label span { display:block; transition:transform .6s cubic-bezier(.22,1,.36,1); }
+.label span+span { position:absolute; top:100%; left:0; white-space:nowrap; }
+.button:hover .label span,.button:focus-visible .label span { transform:translateY(-100%); }
+.needsArrow { display:inline-block; width:1em; font-family:var(--font-khteka),Arial,sans-serif; font-size:.88em; line-height:1; }
+@media(max-width:600px) { .button { font-size:18px; gap:10px; padding:8px 8px 8px 12px; } }
+@media(max-width:380px) { .button { font-size:16px; gap:8px; } }
+@media(prefers-reduced-motion:reduce) { .needsArrow span { animation:none; } .label span { transition:none; } }

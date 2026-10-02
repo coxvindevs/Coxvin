@@ -289,7 +289,7 @@ export default function HalftoneCanvas({
 
     // Render loop synced to IntersectionObserver (no time accumulation when offscreen)
     const render = () => {
-      if (!isRunning || !isIntersecting) {
+      if (!isRunning || !isIntersecting || document.hidden) {
         animationFrameId = null;
         return;
       }
@@ -329,6 +329,12 @@ export default function HalftoneCanvas({
     );
 
     intersectionObserver.observe(container);
+    const resumeOnVisibility = () => {
+      if (!document.hidden && isIntersecting && isRunning && !animationFrameId) {
+        animationFrameId = requestAnimationFrame(render);
+      }
+    };
+    document.addEventListener('visibilitychange', resumeOnVisibility);
 
     // Cleanup
     return () => {
@@ -342,6 +348,7 @@ export default function HalftoneCanvas({
       }
 
       intersectionObserver.disconnect();
+      document.removeEventListener('visibilitychange', resumeOnVisibility);
       resizeObserver.disconnect();
       window.removeEventListener('resize', handleResize);
 
