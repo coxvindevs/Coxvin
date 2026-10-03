@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useRef, useState, type ReactNode 
 import { motion, useReducedMotion } from 'motion/react';
 import Image from 'next/image';
 import styles from './AboutProvider.module.css';
+import { founders } from '@/lib/content';
 
 const AboutContext = createContext<() => void>(() => {});
 export const useAbout = () => useContext(AboutContext);
@@ -14,12 +15,6 @@ const principles = [
   ['Build for what comes next', 'Treat launch as the beginning of real-world learning. Create systems that can adapt as the business grows.'],
 ];
 const clients = ['Gulf Fiber', 'Cullet', 'Oscilla Engineering', 'Flozen AI', 'Softly', 'Open ERP', 'Mowasala', 'Staatliche Form'];
-const founders = [
-  ['Junaid Khan', 'CEO'],
-  ['Muhammad Abbas', 'COO'],
-  ['Muhammad Awais', 'Managing Director'],
-  ['Muhammad Abdullah Bhatti', 'CTO'],
-];
 
 export default function AboutProvider({ children }: { children: ReactNode }) {
   const dialog = useRef<HTMLDialogElement>(null);
@@ -61,7 +56,7 @@ export default function AboutProvider({ children }: { children: ReactNode }) {
           <div className={styles.meta}><span>CX / COXVIN</span><span>BASED IN PAKISTAN / WORKING WORLDWIDE</span></div>
           <div className={styles.media}><Image src="/images/closing-cta/cta-bg-loom.webp" alt="Interwoven structural forms" fill sizes="(max-width: 720px) 100vw, 672px"/>{['listen','design','engineer','evolve'].map((word,i)=><motion.span key={word} initial={{opacity:0,y:reduced?0:40}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:reduced?0:0.9,delay:reduced?0:i*.1}}>{word}</motion.span>)}</div>
         </motion.section>
-        <motion.section {...reveal} className={styles.row} aria-labelledby="about-founders"><h2 id="about-founders">Co-founders</h2><ul className={styles.founders}>{founders.map(([name,role])=><li key={name}><span>{name}</span><span className={styles.founderRole}>Co-founder &amp; {role}</span></li>)}</ul></motion.section>
+        <motion.section {...reveal} className={styles.row} aria-labelledby="about-founders"><h2 id="about-founders">Co-founders</h2><ul className={styles.founders}>{founders.map(({ name, role }) => <li key={name}><span>{name}</span><span className={styles.founderRole}>Co-founder &amp; {role}</span></li>)}</ul></motion.section>
         <motion.section {...reveal} className={styles.row}><h2>Clients</h2><ul>{clients.map(name=><li key={name}>{name}</li>)}</ul></motion.section>
         <motion.section {...reveal} className={styles.row}><h2>Capabilities</h2><ul>{['Digital Experiences','Visual Direction','Business Systems','AI & Integrations','Cloud & Infrastructure','SEO & Optimization'].map(name=><li key={name}>{name}</li>)}</ul></motion.section>
         <section className={styles.row}>

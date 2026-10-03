@@ -4,6 +4,7 @@ import { useRef, useState, type KeyboardEvent } from 'react';
 import dynamic from 'next/dynamic';
 import { useNearViewport } from '@/lib/use-near-viewport';
 import styles from './ServicesSection.module.css';
+import { services as SERVICES } from '@/lib/content';
 
 const IntegrationCardDemo = dynamic(() => import('@/components/ui/integration-card'));
 const DigitalMarquee = dynamic(() => import('@/components/ui/digital-marquee'));
@@ -11,15 +12,6 @@ const BusinessSystemsGrid = dynamic(() => import('@/components/ui/business-syste
 const BrandDirectionCarousel = dynamic(() => import('@/components/ui/brand-direction-carousel'));
 const CloudInfrastructure = dynamic(() => import('@/components/ui/service-operations').then(module => module.CloudInfrastructure));
 const SystemPerformance = dynamic(() => import('@/components/ui/service-operations').then(module => module.SystemPerformance));
-
-const SERVICES = [
-  { id: '01', title: 'Digital Experiences', description: 'Premium websites, interfaces and commerce experiences.' },
-  { id: '02', title: 'Visual Direction', description: 'Brand identity, typography and visual systems with a clear point of view.' },
-  { id: '03', title: 'Business Systems', description: 'SaaS products, portals, ERP and internal tools engineered around your operations.' },
-  { id: '04', title: 'AI & Integrations', description: 'Intelligent agents, automated workflows and connected business platforms.' },
-  { id: '05', title: 'Cloud & Infrastructure', description: 'Cloud hosting, deployment and infrastructure management that keep your business running reliably.' },
-  { id: '06', title: 'SEO & Optimization', description: 'Technical SEO, search visibility and performance improvements that help people find and use your website.' },
-];
 
 export default function ServiceTabs() {
   const { ref, nearby } = useNearViewport<HTMLDivElement>();
